@@ -1,0 +1,16 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    flex-direction: column;
+}
+
+.inputs {
+    display: flex;
+    align-items: center;
+}
+
+.divider {
+    margin: 0 10px;
+}

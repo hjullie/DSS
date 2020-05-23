@@ -1,0 +1,49 @@
+.deleteIcon {
+    position: absolute;
+    right: -25px;
+    cursor: pointer;
+
+    color: darkgrey;
+}
+
+.deleteIcon:hover {
+    color: black;
+}
+
+.list {
+    width: 100%;
+}
+
+.criteria {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+}
+
+.criteria + .criteria {
+    margin-top: 40px;
+}
+
+.field {
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.label {
+    margin-bottom: 4px;
+}
+
+.field + .field {
+    margin-left: 30px;
+}
+
+.value + .value {
+    margin-top: 10px;
+}
+
+.addValueButton {
+    align-self: center;
+    margin-top: 4px !important;
+}

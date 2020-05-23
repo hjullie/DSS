@@ -1,0 +1,9 @@
+.detail {
+    flex-direction: column;
+    align-self: flex-start;
+}
+
+.button {
+    margin-top: 20px !important;
+    align-self: flex-end;
+}

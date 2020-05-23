@@ -1,0 +1,16 @@
+.table {
+    width: auto !important;
+}
+
+.row:not(:last-child) {
+    border-bottom: 1px solid rgba(224, 224, 224, 1);
+}
+
+.cell {
+    border-bottom: none !important;
+}
+
+.cell:not(:first-child):not(:last-child) {
+    border-left: 1px solid rgba(224, 224, 224, 1);
+    border-right: 1px solid rgba(224, 224, 224, 1);;
+}
