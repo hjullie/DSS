@@ -1,3 +1,7 @@
+.title {
+    font-weight: 500;
+}
+
 .detail {
     flex-direction: column;
     align-self: flex-start;
@@ -6,4 +10,24 @@
 .button {
     margin-top: 20px !important;
     align-self: flex-end;
+}
+
+.tabs {
+    width: 100%;
+
+
+    margin: 40px 0;
+}
+
+.footer {
+    margin-top: 20px !important;
+    text-align: center;
+}
+
+.link {
+    cursor: pointer;
+}
+
+.link:hover {
+    color: black;
 }

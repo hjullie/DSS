@@ -2,6 +2,7 @@
     width: 100%;
 
     background: transparent !important;
+    margin-bottom: 16px;
 }
 
 .content {
@@ -14,11 +15,15 @@
 .form {
     width: 100%;
 
-    padding: 30px;
+    padding: 40px;
+}
+
+.breadCrumbs {
+    margin-bottom: 32px !important;
 }
 
 .submit {
-    margin-top: 20px;
+    margin-top: 25px;
 }
 
 .title {

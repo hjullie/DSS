@@ -1,3 +1,8 @@
+export enum CriteriaType {
+    String = 'Множество',
+    Number = 'Число',
+}
+
 export enum MatrixAxis {
     Row,
     Column,
@@ -20,6 +25,7 @@ export enum Methods {
 }
 
 export enum MethodsType {
+    All = "Все",
     Individual = 'Индивидуальные методы',
     Group = 'Групповые методы',
 }

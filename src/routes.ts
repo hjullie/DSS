@@ -9,11 +9,13 @@ export enum Routes {
     Preference,
     Rang,
     LSO,
+    Fit,
 }
 
 export const routes = {
     [Routes.Home]: '/',
     [Routes.Group]: '/group',
+    [Routes.Fit]: '/fit',
     [Routes.Individual]: '/individual',
     [Routes.AHP]: '/ahp',
     [Routes.MD]: '/md',

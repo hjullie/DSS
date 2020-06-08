@@ -2,8 +2,6 @@ import React from 'react';
 
 import {Grid, Paper, Step, StepLabel, Stepper} from "@material-ui/core";
 
-
-import styles from "./Form.module.css";
 import commonStyles from "../../../common.module.css";
 import {BreadCrumbs} from "../../BreadCrumbs/BreadCrumbs";
 import {Methods} from "../../../constants";
@@ -19,7 +17,8 @@ export const Form: React.FC<FormProps> = ({method, getFormStepContent, step, ste
 
     return (
         <Grid className={commonStyles.content} xs={10} container>
-            <BreadCrumbs method={method} />
+            <BreadCrumbs className={commonStyles.breadCrumbs} method={method} />
+
             <Stepper className={commonStyles.stepper} activeStep={step - 1}>
                 {stepTitles.map((label, index) => {
                     return (
@@ -31,6 +30,7 @@ export const Form: React.FC<FormProps> = ({method, getFormStepContent, step, ste
                     )}
                 )}
             </Stepper>
+
             <Paper className={commonStyles.form} elevation={1}>
                 {getFormStepContent()}
             </Paper>

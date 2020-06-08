@@ -4,7 +4,8 @@ import {Grid, Table, TableBody, TableCell, TableRow} from "@material-ui/core";
 import {reduce} from "../../../helpers/matrix/reduce";
 import {multiply} from "../../../helpers/matrix/multiply";
 import {transpose} from "../../../helpers/matrix/transpose";
-import ArrowRightAltIcon from '@material-ui/icons/ArrowRightAlt';
+import MultiplyIcon from '@material-ui/icons/Close';
+import EqualIcon from '@material-ui/icons/DragHandle';
 
 import styles from "./FormSteps.module.css";
 import commonStyles from "../../../common.module.css";
@@ -56,7 +57,7 @@ export const FormStep3: React.FC<IFormStep3Props> = ({criteria, alternatives, cr
                     </TableBody>
                 </Table>
 
-                <ArrowRightAltIcon />
+                <MultiplyIcon />
 
                 <Table className={styles.tableThin}>
                     <TableBody>
@@ -92,7 +93,7 @@ export const FormStep3: React.FC<IFormStep3Props> = ({criteria, alternatives, cr
                     </TableBody>
                 </Table>
 
-                <ArrowRightAltIcon />
+                <EqualIcon />
 
                 <Table className={styles.tableThin}>
                     <TableBody>

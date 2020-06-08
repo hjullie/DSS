@@ -1,0 +1,15 @@
+.field + .field {
+    margin-top: 20px;
+}
+
+.label {
+    margin-bottom: 8px;
+}
+
+.link {
+    cursor: pointer;
+}
+
+.link + .link {
+    margin-top: 3px !important;
+}

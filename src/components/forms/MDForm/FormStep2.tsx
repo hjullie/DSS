@@ -10,7 +10,6 @@ import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 
 import styles from "./FormSteps.module.css";
 import commonStyles from "../../../common.module.css";
-import {red} from "@material-ui/core/colors";
 import {FORM_FIELDS} from "../../../constants";
 
 const EMPTY_VALUE = '';

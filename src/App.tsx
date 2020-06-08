@@ -5,11 +5,13 @@ import styles from './App.module.css';
 
 import {MDForm} from "./components/forms/MDForm/MDForm";
 import {AHPForm} from "./components/forms/AHPForm/AHPForm";
-import {MethodAccordion, MethodAccordionType} from "./components/MethodsAccordion/MethodsAccordion";
+import {MethodAccordion} from "./components/MethodsAccordion/MethodsAccordion";
 import {PreferenceForm} from "./components/forms/PreferenceForm/PreferenceForm";
 import {Routes, routes} from "./routes";
 import {RangForm} from "./components/forms/RangForm/RangForm";
 import {LSOForm} from "./components/forms/LSOForm/LSOForm";
+import {MethodsType} from "./constants";
+import {MethodSuggestion} from "./components/MethodSuggestion/MethodSuggestion";
 
 function App() {
     return (
@@ -17,10 +19,13 @@ function App() {
             <div className={styles.app}>
                 <Switch>
                     <Route path={routes[Routes.Group]}>
-                        <MethodAccordion type={MethodAccordionType.Group} className={styles.menu}/>
+                        <MethodAccordion type={MethodsType.Group} className={styles.menu}/>
                     </Route>
                     <Route path={routes[Routes.Individual]}>
-                        <MethodAccordion type={MethodAccordionType.Individual} className={styles.menu}/>
+                        <MethodAccordion type={MethodsType.Individual} className={styles.menu}/>
+                    </Route>
+                    <Route path={routes[Routes.Fit]}>
+                        <MethodSuggestion />
                     </Route>
                     <Route path={routes[Routes.AHP]}>
                         <AHPForm/>
@@ -38,7 +43,7 @@ function App() {
                         <LSOForm/>
                     </Route>
                     <Route path={routes[Routes.Home]}>
-                        <MethodAccordion type={MethodAccordionType.All} className={styles.menu}/>
+                        <MethodAccordion type={MethodsType.All} className={styles.menu}/>
                     </Route>
                 </Switch>
             </div>

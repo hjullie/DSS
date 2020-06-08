@@ -1,21 +1,21 @@
 import React, {ChangeEvent} from 'react';
 
-import {Button, Fab, Grid, IconButton, InputLabel, MenuItem, Select, TextField} from "@material-ui/core";
+import {Button, Grid, IconButton, InputLabel, MenuItem, Select, TextField} from "@material-ui/core";
 import {IField} from "../../../types";
 
 import styles from "./FormStep1.module.css";
 import commonStyles from "../../../common.module.css";
 import CloseIcon from "@material-ui/icons/Close";
+import DeleteIcon from "@material-ui/icons/Delete";
 import {deepCopy} from "../../../helpers/object/deepCopy";
 import AddIcon from "@material-ui/icons/Add";
-
-enum CriteriaType {
-    String = 'Множество',
-    Number = 'Число',
-}
+import classNames from "classnames";
+import {CriteriaType} from "../../../constants";
+import {ICriteriaData} from "./LSOForm";
 
 const EMPTY_VALUE = '';
-const INITIAL_COUNT = 2;
+const INITIAL_COUNT = 1;
+const EMPTY_ERROR = 'Это поле обязательно';
 
 const emptyCriteria = {
     name: {
@@ -31,10 +31,10 @@ const emptyCriteria = {
     ]
 }
 
-export interface ICriteriaData {
+export interface ICriteriaField {
     name: IField;
     type: CriteriaType,
-    lookup?: IField[],
+    lookup: IField[],
 }
 
 interface IFormStep1Props {
@@ -42,53 +42,56 @@ interface IFormStep1Props {
 }
 
 export const FormStep1: React.FC<IFormStep1Props> = ({onSubmit}) => {
-    const [criteria, setCriteria] = React.useState<ICriteriaData[]>(new Array(INITIAL_COUNT).fill(emptyCriteria));
+    const [criteria, setCriteria] = React.useState<ICriteriaField[]>(new Array(INITIAL_COUNT).fill(emptyCriteria));
 
-    // const validate = React.useCallback(() => {
-    //     let isValid = true;
-    //     const newCriteria = [...alternatives];
-    //
-    //     newCriteria.forEach(({value}, index) => {
-    //         const validators = fieldsValidators[FORM_FIELDS.EXPERTS];
-    //         let error = '';
-    //
-    //         for (let validator of validators) {
-    //             const currError = validator(value);
-    //
-    //             if (currError) {
-    //                 error = currError;
-    //                 break;
-    //             }
-    //         }
-    //
-    //         if (error) {
-    //             newCriteria[index].error = error;
-    //
-    //             isValid = false;
-    //         }
-    //     });
-    //
-    //     setAlternatives(newCriteria);
-    //
-    //     return isValid;
-    // }, [alternatives, experts]);
-    //
-    // const onStepSubmit = React.useCallback(() => {
-    //     const isValid = validate();
-    //
-    //     if (isValid) {
-    //         const criteriaValues = alternatives.map(({value}) => value);
-    //         const expertsValues = experts.map(({value}) => value);
-    //
-    //         onSubmit(criteriaValues, expertsValues);
-    //     }
-    // }, [experts, alternatives, onSubmit, validate]);
+    const validate = React.useCallback(() => {
+        let isValid = true;
+        const newCriteria = deepCopy(criteria);
+
+        newCriteria.forEach(({name, type, lookup}, index) => {
+            if (!name.value) {
+                newCriteria[index].name.error = EMPTY_ERROR;
+
+                isValid = false;
+            }
+
+            if (type === CriteriaType.String) {
+                lookup.forEach((value) => {
+                    if (!value.value) {
+                        value.error = EMPTY_ERROR;
+
+                        isValid = false;
+                    }
+                })
+            }
+        });
+
+        setCriteria(newCriteria);
+
+        return isValid;
+    }, [criteria]);
+
+    const onStepSubmit = React.useCallback(() => {
+        const isValid = validate();
+
+        if (isValid) {
+            const criteriaData = criteria.map(({name, type, lookup}) => (
+                {
+                    type,
+                    name: name.value,
+                    lookup: type === CriteriaType.String ? lookup.map(({value}) => value) : undefined,
+                })
+            );
+
+            onSubmit(criteriaData);
+        }
+    }, [onSubmit, validate]);
 
     const onCriteriaNameChange = React.useCallback((index: number) => {
         return (e: ChangeEvent<HTMLInputElement>) => {
             const value = e.currentTarget.value;
             const newData = deepCopy(criteria);
-            const error = value ? '' : 'Это поле обязательно';
+            const error = value ? '' : EMPTY_ERROR;
 
             newData[index].name = {value, error};
 
@@ -111,12 +114,9 @@ export const FormStep1: React.FC<IFormStep1Props> = ({onSubmit}) => {
         return (e: ChangeEvent<HTMLInputElement>) => {
             const value = e.currentTarget.value;
             const newData = deepCopy(criteria);
-            const error = value ? '' : 'Это поле обязательно';
+            const error = value ? '' : EMPTY_ERROR;
 
-            if (newData[i].lookup) {
-                // @ts-ignore
-                newData[i].lookup[j] = {value, error};
-            }
+            newData[i].lookup[j] = {value, error};
 
             setCriteria(newData);
         }
@@ -141,14 +141,21 @@ export const FormStep1: React.FC<IFormStep1Props> = ({onSubmit}) => {
         return () => {
             const newData = deepCopy(criteria);
 
-            if (newData[index].lookup) {
-                // @ts-ignore
-                newData[index].lookup.push({value: '', error: ''});
-            }
+            newData[index].lookup.push({value: '', error: ''});
 
             setCriteria(newData);
         }
     }, [criteria])
+
+    const onCriteriaLookupDelete = React.useCallback((i: number, j: number) => {
+        return (_e: ChangeEvent<{}>) => {
+            const newData = deepCopy(criteria);
+
+            newData[i].lookup = newData[i].lookup.filter((_, index) => index !== j);
+
+            setCriteria(newData);
+        }
+    }, [criteria]);
 
     return (
         <Grid container>
@@ -160,20 +167,25 @@ export const FormStep1: React.FC<IFormStep1Props> = ({onSubmit}) => {
                 {criteria.map(({name: {value, error}, type, lookup}, index) => {
                     return (
                         <div key={index} className={styles.criteria}>
-                            {index >= INITIAL_COUNT && (
-                                <CloseIcon className={styles.deleteIcon} onClick={onCriteriaDelete(index)}/>
-                            )}
-
                             <div className={styles.field}>
                                 <InputLabel className={styles.label}>Название</InputLabel>
-                                <TextField placeholder={`Критерий ${index + 1}`}
-                                           value={value}
-                                           variant={'outlined'}
-                                           onChange={onCriteriaNameChange(index)}
-                                           label={error || undefined}
-                                           error={Boolean(error)}
-                                           fullWidth
-                                />
+                                <div style={{position: "relative"}}>
+                                    <TextField placeholder={`Критерий ${index + 1}`}
+                                               value={value}
+                                               variant={'outlined'}
+                                               onChange={onCriteriaNameChange(index)}
+                                               label={error || undefined}
+                                               error={Boolean(error)}
+                                               fullWidth
+                                    />
+
+                                    {index >= INITIAL_COUNT && (
+                                        <DeleteIcon
+                                            className={classNames(styles.deleteIcon, styles.deleteCriteriaIcon)}
+                                            onClick={onCriteriaDelete(index)}
+                                        />
+                                    )}
+                                </div>
                             </div>
 
                             <div className={styles.field}>
@@ -189,33 +201,38 @@ export const FormStep1: React.FC<IFormStep1Props> = ({onSubmit}) => {
                                         );
                                     })}
                                 </Select>
+
+                                {type === CriteriaType.String && (
+                                    <div className={styles.values}>
+                                        <InputLabel className={styles.label}>Значения</InputLabel>
+
+                                        {lookup.map(({value, error}, jndex) => {
+                                            return (
+                                                <div className={styles.value}>
+                                                    <TextField
+                                                        key={jndex}
+                                                        placeholder={`Значение ${jndex + 1}`}
+                                                        value={value}
+                                                        variant={'outlined'}
+                                                        onChange={onCriteriaLookupChange(index, jndex)}
+                                                        label={error || undefined}
+                                                        error={Boolean(error)}
+                                                        fullWidth
+                                                    />
+
+                                                    {jndex > 0 && (
+                                                        <CloseIcon className={styles.deleteIcon} onClick={onCriteriaLookupDelete(index, jndex)}/>
+                                                    )}
+                                                </div>
+                                            );
+                                        })}
+
+                                        <IconButton className={styles.addValueButton} size="small" onClick={onCriteriaValueAdd(index)} color="default" aria-label="add">
+                                            <AddIcon />
+                                        </IconButton>
+                                    </div>
+                                )}
                             </div>
-
-                            {type === CriteriaType.String && (
-                                <div className={styles.field}>
-                                    <InputLabel className={styles.label}>Значения</InputLabel>
-
-                                    {lookup && lookup.map(({value, error}, jndex) => {
-                                        return (
-                                            <TextField
-                                                className={styles.value}
-                                                key={jndex}
-                                                placeholder={`Значение ${jndex + 1}`}
-                                                value={value}
-                                                variant={'outlined'}
-                                                onChange={onCriteriaLookupChange(index, jndex)}
-                                                label={error || undefined}
-                                                error={Boolean(error)}
-                                                fullWidth
-                                            />
-                                        );
-                                    })}
-
-                                    <IconButton className={styles.addValueButton} size="small" onClick={onCriteriaValueAdd(index)} color="default" aria-label="add">
-                                        <AddIcon />
-                                    </IconButton>
-                                </div>
-                            )}
                         </div>
                     );
                 })}
@@ -226,7 +243,7 @@ export const FormStep1: React.FC<IFormStep1Props> = ({onSubmit}) => {
                 <Button onClick={onCriteriaAdd} startIcon={<AddIcon />} size="large" variant="contained" color="default">
                     Добавить критерий
                 </Button>
-                <Button size="large" variant="contained" color="primary">
+                <Button onClick={onStepSubmit} size="large" variant="contained" color="primary">
                     Далее
                 </Button>
             </Grid>

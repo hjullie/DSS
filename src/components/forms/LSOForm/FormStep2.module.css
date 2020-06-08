@@ -1,0 +1,10 @@
+.container {
+    display: flex;
+    justify-content: center;
+
+    margin: -40px;
+}
+
+.container :global(.MuiTableRow-root[mode="add"]) :global(.MuiFormControl-root), .container :global(.MuiTableRow-root[mode="add"]) :global(.MuiInputBase-root) {
+    width: 100%;
+}
